@@ -1,0 +1,15 @@
+---
+title: "Analyzing US Census Data"
+format: html
+author: "Andrew Lucas"
+execute: 
+  echo: false
+---
+
+```{r}
+#| message: false
+#| label: setup
+library(tidyverse)
+library(tidycensus)
+library(sf)
+```
