@@ -13,3 +13,29 @@ library(tidyverse)
 library(tidycensus)
 library(sf)
 ```
+
+```{r}
+#| message: false
+income_tx <- get_acs(
+  geography = "county",
+  state = "TX",
+  variables = "B19013_001",
+  year = 2020,
+  geometry = TRUE
+)
+```
+
+```{r}
+ggplot(income_tx, aes(fill = estimate)) +
+  geom_sf(linewidth = 0.1, color = "white") +
+  scale_fill_viridis_c(
+    labels = scales::label_dollar(),
+    option = "viridis"
+  ) +
+  labs(
+    title = "Median Household Income by County in Texas (2020)",
+    caption = "Source: US Census Bureau, 2016–2020 ACS 5-year estimates",
+    fill = "Median Household\nIncome"
+  ) +
+  theme_void()
+```
