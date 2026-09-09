@@ -75,3 +75,44 @@ edu_state |>
   ) +
   theme_minimal()
 ```
+
+```{r}
+#| message: false
+age_ca <- get_acs(
+  geography = "county",
+  state = "CA",
+  variables = c(
+    median_age = "B01002_001",
+    population = "B01003_001"
+  ),
+  year = 2020,
+  geometry = FALSE
+)
+```
+
+```{r}
+age_ca |> 
+  select(-moe) |> 
+  pivot_wider(names_from = variable, values_from = estimate) |> 
+  mutate(county = str_remove(NAME, " County, California")) |> 
+  ggplot(aes(x = median_age, y = population)) +
+  geom_point(alpha = 0.7) +
+  geom_text(
+    data = \(df) slice_max(df, order_by = population, n = 5),
+    aes(label = county),
+    vjust = -0.6,
+    size = 3.5,
+    check_overlap = TRUE
+  ) +
+  scale_y_log10(
+    labels = scales::label_comma(),
+    expand = expansion(mult = c(0.05, 0.15))
+  ) +
+  labs(
+    title = "California County Population vs. Median Age (2020)",
+    x = "Median Age (years)",
+    y = "Total Population (log scale)",
+    caption = "Source: US Census Bureau, 2016-2020 ACS 5-year estimates"
+  ) +
+  theme_minimal()
+```
