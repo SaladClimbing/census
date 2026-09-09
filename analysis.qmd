@@ -39,3 +39,39 @@ ggplot(income_tx, aes(fill = estimate)) +
   ) +
   theme_void()
 ```
+
+```{r}
+#| message: false
+#| cache: true
+edu_state <- get_acs(
+  geography = "state",
+  variables = c(
+    "B15003_022",
+    "B15003_023",
+    "B15003_024",
+    "B15003_025"
+  ),
+  summary_var = "B15003_001",
+  year = 2020
+)
+```
+
+```{r}
+#| fig-height: 8
+edu_state |> 
+  group_by(NAME) |> 
+  summarize(
+    percent = sum(estimate) / first(summary_est)
+  ) |> 
+  ggplot(aes(x = percent, y = fct_reorder(NAME, percent), fill = percent)) +
+  geom_col(show.legend = FALSE) +
+  scale_x_continuous(labels = scales::label_percent()) +
+  scale_fill_viridis_c() +
+  labs(
+    title = "Adults with Bachelor's Degree or Higher by State (2020)",
+    x = "Percentage of Adults Aged 25+",
+    y = NULL,
+    caption = "Source: US Census Bureau, 2016-2020 ACS 5-year estimates"
+  ) +
+  theme_minimal()
+```
